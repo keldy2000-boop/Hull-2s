@@ -393,13 +393,13 @@ details.card[open] > summary { margin-bottom: .25rem; }
     <p class="sub" id="awards-sub"></p>
     <div class="card">
       <h3>Man of the match, since 12 September</h3>
-      <ol class="scorers" id="motm"></ol>
       <p class="note" id="motm-note"></p>
+      <ol class="scorers" id="motm"></ol>
     </div>
     <div class="card">
       <h3>Dick of the day, since 3 October</h3>
-      <ol class="scorers" id="dodlist"></ol>
       <p class="note" id="dod"></p>
+      <ol class="scorers" id="dodlist"></ol>
     </div>
     <p class="note" id="awards-note"></p>
   </section>
@@ -415,14 +415,6 @@ details.card[open] > summary { margin-bottom: .25rem; }
         </table>
       </div>
     </div>
-  </section>
-
-  <section class="method" aria-labelledby="method-h">
-    <h2 id="method-h">How the forecast works</h2>
-    <p>After every round the rest of the season is played out 20,000 times. Each team's scoring and conceding rates come from its results so far, pulled towards the league average while there are few games to judge by, with a small edge for the home side. The chances are the share of simulated seasons where each outcome happens.</p>
-    <p>Promotion chance is the chance of finishing top, since the champions go up. Relegation chance is the chance of finishing in the bottom two; how many teams go down isn't confirmed, so the bottom three is shown as well.</p>
-    <p>Hull's 1st XI play in the YNE Open Men's Division 1, the league above, and area rules normally stop a club having two teams in one division. Winning this league may not bring promotion unless the 1s go up too.</p>
-    <p>Results come from club Pitchero pages and the table is checked against the official YNE Hockey table. Where a score isn't published yet, the table uses the winning margin and the forecast assumes a typical score. This is a fan-made page, not an official club or YNE Hockey site.</p>
   </section>
 
   <footer class="foot">
@@ -798,10 +790,10 @@ details.card[open] > summary { margin-bottom: .25rem; }
 
     $("awards-sub").textContent = "From the group's WhatsApp polls.";
     rankedBars(seasonTotals(aw.motm_history), "motm");
-    $("motm-note").textContent = weekWinners(aw.motm_history);
+    $("motm-note").textContent = weekWinners(aw.motm_history.slice(-1));
 
     rankedBars(seasonTotals(aw.dod_history), "dodlist");
-    $("dod").textContent = weekWinners(aw.dod_history);
+    $("dod").textContent = weekWinners(aw.dod_history.slice(-1));
     $("awards-note").textContent = "Counted from the WhatsApp polls we have. Some polls were cut off in screenshots, so a few votes may be missing. 26 September isn't included yet.";
   }
 
