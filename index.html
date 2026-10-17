@@ -392,13 +392,16 @@ details.card[open] > summary { margin-bottom: .25rem; }
     <h2 id="awards-h">Weekend awards</h2>
     <p class="sub" id="awards-sub"></p>
     <div class="card">
+      <h3>This week</h3>
+      <p><b>Man of the match:</b> <span id="motm-week"></span></p>
+      <p><b>Dick of the day:</b> <span id="dod-week"></span></p>
+    </div>
+    <div class="card">
       <h3>Man of the match, since 12 September</h3>
-      <p class="note" id="motm-note"></p>
       <ol class="scorers" id="motm"></ol>
     </div>
     <div class="card">
       <h3>Dick of the day, since 3 October</h3>
-      <p class="note" id="dod"></p>
       <ol class="scorers" id="dodlist"></ol>
     </div>
     <p class="note" id="awards-note"></p>
@@ -790,10 +793,10 @@ details.card[open] > summary { margin-bottom: .25rem; }
 
     $("awards-sub").textContent = "From the group's WhatsApp polls.";
     rankedBars(seasonTotals(aw.motm_history), "motm");
-    $("motm-note").textContent = weekWinners(aw.motm_history.slice(-1));
+    $("motm-week").textContent = weekWinners(aw.motm_history.slice(-1));
 
     rankedBars(seasonTotals(aw.dod_history), "dodlist");
-    $("dod").textContent = weekWinners(aw.dod_history.slice(-1));
+    $("dod-week").textContent = weekWinners(aw.dod_history.slice(-1));
     $("awards-note").textContent = "Counted from the WhatsApp polls we have. Some polls were cut off in screenshots, so a few votes may be missing. 26 September isn't included yet.";
   }
 
