@@ -806,9 +806,13 @@ details.card[open] > summary { margin-bottom: .25rem; }
       var top = Math.max.apply(null, last.votes.map(function (v) { return v.votes; }));
       return last.votes.filter(function (v) { return v.votes === top; }).map(function (v) { return v.name; });
     };
-    var allWinners = function (history) {
+    var allWinners = function (history, outrightOnly) {
       var names = [];
-      history.forEach(function (w) { weekTop([w]).forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); }); });
+      history.forEach(function (w) {
+        var winners = weekTop([w]);
+        if (outrightOnly && winners.length > 1) return;
+        winners.forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
+      });
       return names;
     };
     var allTies = function (history) {
@@ -819,10 +823,10 @@ details.card[open] > summary { margin-bottom: .25rem; }
       });
       return names;
     };
-    rankedBars(seasonTotals(aw.motm_history), "motm", allWinners(aw.motm_history), "\u2B50", allTies(aw.motm_history));
+    rankedBars(seasonTotals(aw.motm_history), "motm", allWinners(aw.motm_history, true), "\u2B50", allTies(aw.motm_history));
     $("motm-week").textContent = weekWinners(aw.motm_history.slice(-1));
 
-    rankedBars(seasonTotals(aw.dod_history), "dodlist", allWinners(aw.dod_history), "\uD83C\uDF46", allTies(aw.dod_history));
+    rankedBars(seasonTotals(aw.dod_history), "dodlist", allWinners(aw.dod_history, false), "\uD83C\uDF46", allTies(aw.dod_history));
     $("dod-week").textContent = weekWinners(aw.dod_history.slice(-1));
     $("awards-note").textContent = "Counted from the WhatsApp polls we have. Some polls were cut off in screenshots, so a few votes may be missing. 26 September isn't included yet.";
   }
