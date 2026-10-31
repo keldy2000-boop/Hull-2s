@@ -816,7 +816,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     ts.forEach(function (p, i) {
       var li = el("li", "scorer" + (i === 0 ? " lead" : ""));
       li.setAttribute("aria-label", p.name + ": max " + p.max + " km/h" + (p.avg_moving != null ? ", average moving speed " + p.avg_moving + " km/h" : ""));
-      var nm = el("span", "sname"); nm.append(el("b", null, p.name)); if (p.avg_moving != null) nm.append(el("span", null, "Avg moving " + p.avg_moving + " km/h"));
+      var nm = el("span", "sname"); nm.append(el("b", null, p.name), el("span", null, "Avg moving " + (p.avg_moving != null ? p.avg_moving + " km/h" : "undefined")));
       var fgEl = el("span", "fg"); fgEl.style.flex = "1 1 0";
       var seg = el("span", "sseg"); seg.style.width = (p.max / tMax) * 82 + "%"; seg.append(fgEl);
       var bar = el("span", "sbar"); bar.append(seg, el("b", "stotal", String(p.max)));
