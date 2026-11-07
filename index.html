@@ -847,12 +847,12 @@ details.card[open] > summary { margin-bottom: .25rem; }
   /* weekend awards */
   if (D.awards) {
     var aw = D.awards;
-    var rankedBars = function (list, id, winners, symbol, ties) {
+    var rankedBars = function (list, id, marks) {
       var max = list[0].votes || 1;
       list.forEach(function (p, i) {
         var li = el("li", "scorer" + (i === 0 ? " lead" : ""));
         li.setAttribute("aria-label", p.name + ": " + p.votes + " votes");
-        var nm = el("span", "sname"); nm.append(el("b", null, p.name + (winners.indexOf(p.name) > -1 ? " " + symbol : "") + (ties.indexOf(p.name) > -1 ? " \u2729" : "")));
+        var nm = el("span", "sname"); nm.append(el("b", null, p.name + marks(p.name)));
         var fgEl = el("span", "fg"); fgEl.style.flex = "1 1 0";
         var seg = el("span", "sseg"); seg.style.width = (p.votes / max) * 82 + "%"; seg.append(fgEl);
         var bar = el("span", "sbar"); bar.append(seg, el("b", "stotal", p.votes));
@@ -880,27 +880,29 @@ details.card[open] > summary { margin-bottom: .25rem; }
       var top = Math.max.apply(null, last.votes.map(function (v) { return v.votes; }));
       return last.votes.filter(function (v) { return v.votes === top; }).map(function (v) { return v.name; });
     };
-    var allWinners = function (history, outrightOnly) {
-      var names = [];
+    var winCounts = function (history, outright) {
+      var c = {};
       history.forEach(function (w) {
         var winners = weekTop([w]);
-        if (outrightOnly && winners.length > 1) return;
-        winners.forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
+        if (outright && winners.length > 1) return;
+        winners.forEach(function (n) { c[n] = (c[n] || 0) + 1; });
       });
-      return names;
+      return c;
     };
-    var allTies = function (history) {
-      var names = [];
+    var sharedCounts = function (history) {
+      var c = {};
       history.forEach(function (w) {
         var winners = weekTop([w]);
-        if (winners.length > 1) winners.forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); });
+        if (winners.length > 1) winners.forEach(function (n) { c[n] = (c[n] || 0) + 1; });
       });
-      return names;
+      return c;
     };
-    rankedBars(seasonTotals(aw.motm_history), "motm", allWinners(aw.motm_history, true), "\u2B50", allTies(aw.motm_history));
+    var repeat = function (ch, n) { return n ? " " + new Array(n + 1).join(ch) : ""; };
+    var motmGold = winCounts(aw.motm_history, true), motmShared = sharedCounts(aw.motm_history), dodWins = winCounts(aw.dod_history, false);
+    rankedBars(seasonTotals(aw.motm_history), "motm", function (n) { return repeat("\u2B50", motmGold[n]) + repeat("\u2729", motmShared[n]); });
     $("motm-week").textContent = weekWinners(aw.motm_history.slice(-1));
 
-    rankedBars(seasonTotals(aw.dod_history), "dodlist", allWinners(aw.dod_history, false), "\uD83C\uDF46", []);
+    rankedBars(seasonTotals(aw.dod_history), "dodlist", function (n) { return repeat("\uD83C\uDF46", dodWins[n]); });
     $("dod-week").textContent = weekWinners(aw.dod_history.slice(-1));
     $("awards-note").textContent = "Counted from the WhatsApp polls we have. Some polls were cut off in screenshots, so a few votes may be missing. 26 September isn't included yet.";
   }
