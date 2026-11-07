@@ -421,7 +421,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     <p class="sub">Positive and negative contributions per player, ranked by the net figure (positive minus negative).</p>
     <div class="card">
       <h3>Most contributed</h3>
-      <p class="note">Most positive contributions across the full game.</p>
+      <p class="note">Ranked by total contributions across the full game (positive plus negative).</p>
       <div class="tablewrap"><table><thead><tr><th>Player</th><th>Pos</th><th>Neg</th><th>Net</th></tr></thead><tbody id="contrib-most"></tbody></table></div>
     </div>
     <div class="card">
@@ -870,9 +870,9 @@ details.card[open] > summary { margin-bottom: .25rem; }
 
   /* positive contribution */
   if (D.contribution) {
-    var fillContrib = function (rows, id, byPos) {
+    var fillContrib = function (rows, id, byTotal) {
       rows.map(function (r) { return { name: r.name, pos: r.pos, neg: r.neg, net: r.pos - r.neg }; })
-        .sort(function (a, b) { return byPos ? (b.pos - a.pos || b.net - a.net || a.name.localeCompare(b.name)) : (b.net - a.net || a.name.localeCompare(b.name)); })
+        .sort(function (a, b) { return byTotal ? (b.pos + b.neg - a.pos - a.neg || b.net - a.net || a.name.localeCompare(b.name)) : (b.net - a.net || a.name.localeCompare(b.name)); })
         .forEach(function (r) {
           var tr = el("tr");
           tr.append(el("td", null, r.name), el("td", null, String(r.pos)), el("td", null, String(r.neg)),
