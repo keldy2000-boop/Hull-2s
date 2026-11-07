@@ -133,6 +133,9 @@ button { font: inherit; }
 .section h2 { font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1.1; }
 .section > .sub { color: var(--muted); font-size: .95rem; margin-top: -.6rem; }
 [data-tab][hidden] { display: none !important; }
+.writeup h3 { margin-top: .2rem; }
+.writeup p { margin: .15rem 0 1rem; }
+.writeup p:last-child { margin-bottom: 0; }
 .tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: .3rem; overflow-x: auto; padding: .55rem 0; background: var(--paper); border-bottom: 1px solid var(--line); scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { flex: 1 1 auto; min-height: 40px; padding: .3rem .6rem; border-radius: 999px; border: 1.5px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-size: .92rem; font-weight: 600; cursor: pointer; }
@@ -466,6 +469,20 @@ details.card[open] > summary { margin-bottom: .25rem; }
   <section class="section" id="analytics" data-tab="game" aria-labelledby="analytics-h">
     <h2 id="analytics-h">Game analysis</h2>
     <p class="sub">Worked out from the contribution chart for the 7 November game. Second half is the full game minus the first half.</p>
+    <div class="card writeup">
+      <h3>The game in brief</h3>
+      <p>Hull beat Slazenger 3–2. Across the squad there were 77 positive and 62 negative contributions in the first half (net +15), then 68 positive and 43 negative in the second (net +25). The team was less busy after half-time, with 111 recorded actions against 139, but cleaner: 61% of them were positive, up from 55%.</p>
+      <h3>Busy and effective</h3>
+      <p>Keith Ritchie (27 actions, net +9) and Josh Daniel (25 actions, net +9) combined volume with quality. Oggy had the best net in the squad at +12, with 75% of his 24 actions positive, and he was +6 in both halves.</p>
+      <h3>Most efficient</h3>
+      <p>Reuben Nayyar had the highest positive share, 80% (12 positive, 3 negative), and was +4 in the first half and +5 in the second. Dave Marshall and B Thompson both finished +3 after being level at half-time.</p>
+      <h3>Busiest</h3>
+      <p>David Keld was involved the most, with 34 actions, split almost evenly: 16 positive and 18 negative (net −2). He was −4 in the first half and +2 in the second. Stu Boddy finished −3 overall (7 positive, 10 negative) but was positive after half-time.</p>
+      <h3>Second-half movers</h3>
+      <p>Jamie Dodd made the biggest turnaround, from −5 to +5. David Keld (−4 to +2) and Stu Boddy (−4 to +1) also improved. Josh Auld went from +5 to −5, with one positive and six negatives after half-time, and Mike Wallace from +2 to −3.</p>
+      <h3>Reading the numbers</h3>
+      <p>Totals depend on minutes played and position, which the chart doesn't record, so compare players with that in mind. This is one game, and the first-half figures are worked out from the second-half marks on the board.</p>
+    </div>
     <div class="card">
       <h3>Team: first half v second half</h3>
       <div class="tablewrap"><table><thead><tr><th></th><th>1st half</th><th>2nd half</th></tr></thead><tbody id="an-team"></tbody></table></div>
