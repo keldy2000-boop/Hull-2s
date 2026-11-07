@@ -505,7 +505,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     <div class="card">
       <div class="tablewrap">
         <table>
-          <thead><tr><th class="n">#</th><th>Team</th><th>Points</th><th class="n">Top</th><th class="n">Bottom two</th><th class="n b3">Bottom three</th></tr></thead>
+          <thead><tr><th class="n">#</th><th>Team</th><th>Proj. pts</th><th class="n">Top</th><th class="n">Bottom two</th><th class="n b3">Bottom three</th></tr></thead>
           <tbody id="pred"></tbody>
         </table>
       </div>
@@ -569,6 +569,9 @@ details.card[open] > summary { margin-bottom: .25rem; }
 
   var now = lineOf(lastRound, HULL), before = lastRound > 1 ? lineOf(lastRound - 1, HULL) : null;
   var f = oddsOf(fLast, HULL), fb = oddsOf(fLast - 1, HULL);
+  var predOrder = D.forecast.filter(function (r) { return r.after_round === fLast; })
+    .sort(function (a, b) { return b.proj_pts - a.proj_pts || a.avg_pos - b.avg_pos; });
+  var predRank = function (team) { return predOrder.findIndex(function (r) { return r.team === team; }) + 1; };
 
   /* header */
   $("lede").innerHTML = "";
@@ -602,7 +605,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
   $("o-releg").textContent = f.bottom2_pct + "%";
   delta($("o-releg-d"), fb ? f.bottom2_pct - fb.bottom2_pct : null, false, "", "First forecast");
   $("o-releg-d").append(el("br"), "Bottom three: " + f.bottom3_pct + "%");
-  $("o-finish").textContent = ordinal(f.proj_pos);
+  $("o-finish").textContent = ordinal(predRank(HULL));
   $("o-finish-d").textContent = "on about " + f.proj_pts + " points (likely " + f.pts_low + " to " + f.pts_high + ")";
 
   /* animated table */
@@ -778,12 +781,13 @@ details.card[open] > summary { margin-bottom: .25rem; }
   });
 
   /* predicted table */
-  var pred = D.forecast.filter(function (r) { return r.after_round === fLast; }).sort(function (a, b) { return a.proj_pos - b.proj_pos; });
-  $("pred-sub").textContent = "Forecast after round " + fLast + ". The bar shows each team's likely points range: eight simulated seasons in ten land inside it.";
+  var pred = predOrder;
+  $("pred-sub").textContent = "Forecast after round " + fLast + ", ordered by projected final points. The bar shows each team's likely points range: eight simulated seasons in ten land inside it.";
   var lo = Math.min.apply(null, pred.map(function (r) { return r.pts_low; })), hi = Math.max.apply(null, pred.map(function (r) { return r.pts_high; }));
   var sx = function (v) { return (v - lo) / ((hi - lo) || 1) * 100; };
-  pred.forEach(function (r) {
-    var tr = el("tr", (r.team === HULL ? "hull " : "") + (r.proj_pos === 1 ? "top " : "") + (r.proj_pos >= N - 1 ? "drop" : ""));
+  pred.forEach(function (r, i) {
+    var rank = i + 1;
+    var tr = el("tr", (r.team === HULL ? "hull " : "") + (rank === 1 ? "top " : "") + (rank >= N - 1 ? "drop" : ""));
     var pc = el("div", "ptsc"); pc.append(el("b", null, r.proj_pts));
     var rg = el("div", "range"); rg.setAttribute("aria-hidden", "true");
     var trk = el("span", "trk"), rng = el("span", "rng"), dot = el("span", "dot");
@@ -791,7 +795,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     rg.append(trk, rng, dot); pc.append(rg);
     var ptd = el("td"); ptd.append(pc);
     var tdTeam = el("td", "team"); if (r.team === HULL) tdTeam.append(miniCrest()); tdTeam.append(r.team);
-    tr.append(el("td", "n", r.proj_pos), tdTeam, ptd, el("td", "n", r.title_pct + "%"), el("td", "n", r.bottom2_pct + "%"), el("td", "n b3", r.bottom3_pct + "%"));
+    tr.append(el("td", "n", rank), tdTeam, ptd, el("td", "n", r.title_pct + "%"), el("td", "n", r.bottom2_pct + "%"), el("td", "n b3", r.bottom3_pct + "%"));
     $("pred").append(tr);
   });
 
