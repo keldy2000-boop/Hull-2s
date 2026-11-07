@@ -132,6 +132,13 @@ button { font: inherit; }
 .section { display: grid; gap: 1rem; }
 .section h2 { font-family: var(--display); font-weight: 600; font-size: 1.75rem; line-height: 1.1; }
 .section > .sub { color: var(--muted); font-size: .95rem; margin-top: -.6rem; }
+[data-tab][hidden] { display: none !important; }
+.tabs { position: sticky; top: 0; z-index: 5; display: flex; gap: .3rem; overflow-x: auto; padding: .55rem 0; background: var(--paper); border-bottom: 1px solid var(--line); scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: 1 1 auto; min-height: 40px; padding: .3rem .6rem; border-radius: 999px; border: 1.5px solid var(--line); background: transparent; color: var(--ink); font: inherit; font-size: .92rem; font-weight: 600; cursor: pointer; }
+@media (max-width: 340px) { .tab { padding: .3rem .4rem; font-size: .85rem; } }
+.tab[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: var(--card); }
+.tab:focus-visible { outline: 3px solid var(--club, #1d58b8); outline-offset: 2px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; min-width: 0; }
 .card h3 { font-size: 1rem; font-weight: 600; }
 .card .note { color: var(--muted); font-size: .85rem; margin-top: .1rem; }
@@ -279,7 +286,15 @@ details.card[open] > summary { margin-bottom: .25rem; }
     <p class="stamp-line" id="updated"></p>
   </header>
 
-  <section class="pitch" id="table" aria-labelledby="table-h">
+  <div class="tabs" role="tablist" aria-label="Page sections">
+    <button type="button" class="tab" role="tab" data-tab="table" aria-selected="true">Table</button>
+    <button type="button" class="tab" role="tab" data-tab="hull" aria-selected="false">Hull</button>
+    <button type="button" class="tab" role="tab" data-tab="goals" aria-selected="false">Goals</button>
+    <button type="button" class="tab" role="tab" data-tab="awards" aria-selected="false">Awards</button>
+    <button type="button" class="tab" role="tab" data-tab="game" aria-selected="false">Game</button>
+  </div>
+
+  <section class="pitch" id="table" data-tab="table" aria-labelledby="table-h">
     <svg class="pitch-lines" viewBox="0 0 400 600" preserveAspectRatio="none" aria-hidden="true">
       <rect x="10" y="10" width="380" height="580"></rect>
       <line x1="10" y1="300" x2="390" y2="300"></line>
@@ -313,7 +328,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </div>
   </section>
 
-  <section class="section" id="hull" aria-labelledby="hull-h">
+  <section class="section" id="hull" data-tab="hull" aria-labelledby="hull-h">
     <h2 id="hull-h">Hull at a glance</h2>
     <div class="tiles">
       <div class="card tile"><span class="label">League position</span><span class="big" id="t-pos"></span><span class="small" id="t-pos-d"></span></div>
@@ -362,7 +377,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </details>
   </section>
 
-  <section class="section" id="goals" aria-labelledby="goals-h">
+  <section class="section" id="goals" data-tab="goals" aria-labelledby="goals-h">
     <h2 id="goals-h">Goals across the league</h2>
     <p class="sub" id="goals-sub"></p>
     <div class="card">
@@ -389,7 +404,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </div>
   </section>
 
-  <section class="section" id="awards" aria-labelledby="awards-h">
+  <section class="section" id="awards" data-tab="awards" aria-labelledby="awards-h">
     <h2 id="awards-h">Weekend awards</h2>
     <p class="sub" id="awards-sub"></p>
     <div class="card">
@@ -408,7 +423,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     <p class="note" id="awards-note"></p>
   </section>
 
-  <section class="section" id="speed" aria-labelledby="speed-h">
+  <section class="section" id="speed" data-tab="awards" aria-labelledby="speed-h">
     <h2 id="speed-h">Top speed</h2>
     <p class="sub" id="speed-sub"></p>
     <div class="card">
@@ -416,7 +431,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </div>
   </section>
 
-  <section class="section" id="contribution" aria-labelledby="contribution-h">
+  <section class="section" id="contribution" data-tab="game" aria-labelledby="contribution-h">
     <h2 id="contribution-h">Positive contribution</h2>
     <p class="sub">Positive and negative contributions per player, ranked by the net figure (positive minus negative).</p>
     <div class="card">
@@ -434,7 +449,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </div>
   </section>
 
-  <section class="section" id="analytics" aria-labelledby="analytics-h">
+  <section class="section" id="analytics" data-tab="game" aria-labelledby="analytics-h">
     <h2 id="analytics-h">Game analysis</h2>
     <p class="sub">Worked out from the positive contribution chart. Second half is the full game minus the first half.</p>
     <div class="card">
@@ -453,7 +468,7 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </div>
   </section>
 
-  <section class="section" id="predicted" aria-labelledby="pred-h">
+  <section class="section" id="predicted" data-tab="table" aria-labelledby="pred-h">
     <h2 id="pred-h">Predicted final table</h2>
     <p class="sub" id="pred-sub"></p>
     <div class="card">
@@ -983,7 +998,38 @@ details.card[open] > summary { margin-bottom: .25rem; }
     if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(function () { $("share").textContent = "Link copied"; setTimeout(function () { $("share").textContent = "Share this page"; }, 2000); });
   });
 
+  /* tabs */
+  var tabBtns = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var tabPanels = Array.prototype.slice.call(document.querySelectorAll("section[data-tab]"));
+  var tabNames = tabBtns.map(function (b) { return b.dataset.tab; });
+  var showTab = function (name, fromClick) {
+    if (tabNames.indexOf(name) < 0) name = tabNames[0];
+    tabPanels.forEach(function (n) { n.hidden = n.dataset.tab !== name; });
+    tabBtns.forEach(function (b) {
+      var on = b.dataset.tab === name;
+      b.setAttribute("aria-selected", String(on));
+      b.tabIndex = on ? 0 : -1;
+    });
+    try { history.replaceState(null, "", "#" + name); } catch (e) {}
+    drawCharts();
+    if (fromClick) {
+      var bar = document.querySelector(".tabs");
+      window.scrollTo({ top: Math.max(0, bar.getBoundingClientRect().top + window.pageYOffset - 4), behavior: reduceMotion ? "auto" : "smooth" });
+    }
+  };
+  tabBtns.forEach(function (b, i) {
+    b.addEventListener("click", function () { showTab(b.dataset.tab, true); });
+    b.addEventListener("keydown", function (ev) {
+      var d = ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      var next = tabBtns[(i + d + tabBtns.length) % tabBtns.length];
+      showTab(next.dataset.tab, false); next.focus(); ev.preventDefault();
+    });
+  });
+
   drawCharts();
+  showTab((location.hash || "").slice(1), false);
+  window.addEventListener("hashchange", function () { showTab((location.hash || "").slice(1), false); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawCharts);
   var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(drawCharts, 150); });
   if (window.matchMedia) {
