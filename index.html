@@ -434,6 +434,25 @@ details.card[open] > summary { margin-bottom: .25rem; }
     </div>
   </section>
 
+  <section class="section" id="analytics" aria-labelledby="analytics-h">
+    <h2 id="analytics-h">Game analytics</h2>
+    <p class="sub">Worked out from the positive contribution chart. Second half is the full game minus the first half.</p>
+    <div class="card">
+      <h3>Team: first half v second half</h3>
+      <div class="tablewrap"><table><thead><tr><th></th><th>1st half</th><th>2nd half</th></tr></thead><tbody id="an-team"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>Half-time swing</h3>
+      <p class="note">Net contribution (positive minus negative) in each half, biggest improvement first.</p>
+      <div class="tablewrap"><table><thead><tr><th>Player</th><th>1st</th><th>2nd</th><th>Swing</th></tr></thead><tbody id="an-swing"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>Positive share</h3>
+      <p class="note">How much of each player's involvement was positive, full game.</p>
+      <div class="tablewrap"><table><thead><tr><th>Player</th><th>Total</th><th>Positive</th></tr></thead><tbody id="an-share"></tbody></table></div>
+    </div>
+  </section>
+
   <section class="section" id="predicted" aria-labelledby="pred-h">
     <h2 id="pred-h">Predicted final table</h2>
     <p class="sub" id="pred-sub"></p>
@@ -883,6 +902,44 @@ details.card[open] > summary { margin-bottom: .25rem; }
     fillContrib(D.contribution.full, "contrib-most", true);
     fillContrib(D.contribution.full, "contrib-full", false);
     fillContrib(D.contribution.first_half, "contrib-first");
+  }
+
+  /* game analytics */
+  if (D.contribution) {
+    var sgn = function (n) { return (n > 0 ? "+" : "") + n; };
+    var fullBy = {};
+    D.contribution.full.forEach(function (r) { fullBy[r.name] = r; });
+    var players = D.contribution.first_half.map(function (h) {
+      var f = fullBy[h.name], second = { pos: f.pos - h.pos, neg: f.neg - h.neg };
+      return { name: h.name, f1: h, f2: second, full: f };
+    });
+    var sum = function (key, half) { return players.reduce(function (t, p) { return t + p[half][key]; }, 0); };
+    var teamRows = [["Positive", "pos"], ["Negative", "neg"]];
+    var t1 = { pos: sum("pos", "f1"), neg: sum("neg", "f1") }, t2 = { pos: sum("pos", "f2"), neg: sum("neg", "f2") };
+    var pct = function (a, b) { return Math.round(100 * a / (a + b)) + "%"; };
+    [["Positive", t1.pos, t2.pos], ["Negative", t1.neg, t2.neg], ["Net", sgn(t1.pos - t1.neg), sgn(t2.pos - t2.neg)],
+     ["Positive share", pct(t1.pos, t1.neg), pct(t2.pos, t2.neg)], ["Total actions", t1.pos + t1.neg, t2.pos + t2.neg]]
+      .forEach(function (r) {
+        var tr = el("tr"); tr.append(el("td", null, r[0]), el("td", null, String(r[1])), el("td", null, String(r[2])));
+        $("an-team").append(tr);
+      });
+
+    players.map(function (p) {
+      var n1 = p.f1.pos - p.f1.neg, n2 = p.f2.pos - p.f2.neg;
+      return { name: p.name, n1: n1, n2: n2, swing: n2 - n1 };
+    }).sort(function (a, b) { return b.swing - a.swing || a.name.localeCompare(b.name); }).forEach(function (r) {
+      var tr = el("tr");
+      tr.append(el("td", null, r.name), el("td", null, sgn(r.n1)), el("td", null, sgn(r.n2)), el("td", null, sgn(r.swing)));
+      $("an-swing").append(tr);
+    });
+
+    players.map(function (p) {
+      return { name: p.name, total: p.full.pos + p.full.neg, share: Math.round(100 * p.full.pos / (p.full.pos + p.full.neg)) };
+    }).sort(function (a, b) { return b.share - a.share || b.total - a.total; }).forEach(function (r) {
+      var tr = el("tr");
+      tr.append(el("td", null, r.name), el("td", null, String(r.total)), el("td", null, r.share + "%"));
+      $("an-share").append(tr);
+    });
   }
 
   /* top scorers */
